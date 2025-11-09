@@ -1,0 +1,1887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VideoStream - Video Hosting Platform</title>
+    <style>
+        /* Design System Variables */
+        :root {
+            --color-white: rgba(255, 255, 255, 1);
+            --color-black: rgba(0, 0, 0, 1);
+            --color-cream-50: rgba(252, 252, 249, 1);
+            --color-cream-100: rgba(255, 255, 253, 1);
+            --color-gray-200: rgba(245, 245, 245, 1);
+            --color-gray-300: rgba(167, 169, 169, 1);
+            --color-gray-400: rgba(119, 124, 124, 1);
+            --color-slate-500: rgba(98, 108, 113, 1);
+            --color-brown-600: rgba(94, 82, 64, 1);
+            --color-charcoal-700: rgba(31, 33, 33, 1);
+            --color-charcoal-800: rgba(38, 40, 40, 1);
+            --color-slate-900: rgba(19, 52, 59, 1);
+            --color-teal-300: rgba(50, 184, 198, 1);
+            --color-teal-400: rgba(45, 166, 178, 1);
+            --color-teal-500: rgba(33, 128, 141, 1);
+            --color-teal-600: rgba(29, 116, 128, 1);
+            --color-teal-700: rgba(26, 104, 115, 1);
+            --color-red-400: rgba(255, 84, 89, 1);
+            --color-red-500: rgba(192, 21, 47, 1);
+            --color-orange-400: rgba(230, 129, 97, 1);
+            --color-orange-500: rgba(168, 75, 47, 1);
+
+            --color-brown-600-rgb: 94, 82, 64;
+            --color-teal-500-rgb: 33, 128, 141;
+            --color-slate-900-rgb: 19, 52, 59;
+            --color-slate-500-rgb: 98, 108, 113;
+            --color-red-500-rgb: 192, 21, 47;
+            --color-gray-400-rgb: 119, 124, 124;
+            --color-teal-300-rgb: 50, 184, 198;
+            --color-gray-300-rgb: 167, 169, 169;
+            --color-gray-200-rgb: 245, 245, 245;
+
+            --color-background: var(--color-cream-50);
+            --color-surface: var(--color-cream-100);
+            --color-text: var(--color-slate-900);
+            --color-text-secondary: var(--color-slate-500);
+            --color-primary: var(--color-teal-500);
+            --color-primary-hover: var(--color-teal-600);
+            --color-primary-active: var(--color-teal-700);
+            --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
+            --color-secondary-hover: rgba(var(--color-brown-600-rgb), 0.2);
+            --color-border: rgba(var(--color-brown-600-rgb), 0.2);
+            --color-error: var(--color-red-500);
+            --color-success: var(--color-teal-500);
+            --color-warning: var(--color-orange-500);
+            --color-card-border: rgba(var(--color-brown-600-rgb), 0.12);
+
+            --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-size-sm: 12px;
+            --font-size-base: 14px;
+            --font-size-lg: 16px;
+            --font-size-xl: 18px;
+            --font-size-2xl: 20px;
+            --font-size-3xl: 24px;
+            --font-size-4xl: 30px;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 550;
+            --font-weight-bold: 600;
+
+            --space-4: 4px;
+            --space-8: 8px;
+            --space-12: 12px;
+            --space-16: 16px;
+            --space-20: 20px;
+            --space-24: 24px;
+            --space-32: 32px;
+            --space-48: 48px;
+
+            --radius-sm: 6px;
+            --radius-base: 8px;
+            --radius-md: 10px;
+            --radius-lg: 12px;
+            --radius-full: 9999px;
+
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+
+            --duration-fast: 150ms;
+            --duration-normal: 250ms;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-background: var(--color-charcoal-700);
+                --color-surface: var(--color-charcoal-800);
+                --color-text: var(--color-gray-200);
+                --color-text-secondary: rgba(var(--color-gray-300-rgb), 0.7);
+                --color-primary: var(--color-teal-300);
+                --color-primary-hover: var(--color-teal-400);
+                --color-secondary: rgba(var(--color-gray-400-rgb), 0.15);
+                --color-secondary-hover: rgba(var(--color-gray-400-rgb), 0.25);
+                --color-border: rgba(var(--color-gray-400-rgb), 0.3);
+                --color-error: var(--color-red-400);
+                --color-success: var(--color-teal-300);
+                --color-warning: var(--color-orange-400);
+                --color-card-border: rgba(var(--color-gray-400-rgb), 0.2);
+            }
+        }
+
+        [data-theme="dark"] {
+            --color-background: var(--color-charcoal-700);
+            --color-surface: var(--color-charcoal-800);
+            --color-text: var(--color-gray-200);
+            --color-text-secondary: rgba(var(--color-gray-300-rgb), 0.7);
+            --color-primary: var(--color-teal-300);
+            --color-primary-hover: var(--color-teal-400);
+            --color-secondary: rgba(var(--color-gray-400-rgb), 0.15);
+            --color-secondary-hover: rgba(var(--color-gray-400-rgb), 0.25);
+            --color-border: rgba(var(--color-gray-400-rgb), 0.3);
+            --color-error: var(--color-red-400);
+            --color-success: var(--color-teal-300);
+            --color-warning: var(--color-orange-400);
+            --color-card-border: rgba(var(--color-gray-400-rgb), 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family-base);
+            font-size: var(--font-size-base);
+            color: var(--color-text);
+            background-color: var(--color-background);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 var(--space-24);
+        }
+
+        /* Navigation */
+        .navbar {
+            background-color: var(--color-surface);
+            border-bottom: 1px solid var(--color-border);
+            padding: var(--space-16) 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+
+        .navbar-menu {
+            display: flex;
+            gap: var(--space-24);
+            align-items: center;
+        }
+
+        .navbar-link {
+            color: var(--color-text);
+            text-decoration: none;
+            font-weight: var(--font-weight-medium);
+            transition: color var(--duration-fast);
+            cursor: pointer;
+        }
+
+        .navbar-link:hover {
+            color: var(--color-primary);
+        }
+
+        .theme-toggle {
+            background: var(--color-secondary);
+            border: none;
+            padding: var(--space-8);
+            border-radius: var(--radius-base);
+            cursor: pointer;
+            color: var(--color-text);
+            transition: background var(--duration-fast);
+        }
+
+        .theme-toggle:hover {
+            background: var(--color-secondary-hover);
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: var(--space-12) var(--space-24);
+            border-radius: var(--radius-base);
+            border: none;
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            transition: all var(--duration-normal);
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-8);
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .btn-secondary {
+            background: var(--color-secondary);
+            color: var(--color-text);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-secondary-hover);
+        }
+
+        .btn-danger {
+            background: var(--color-error);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            opacity: 0.9;
+        }
+
+        .btn-sm {
+            padding: var(--space-8) var(--space-16);
+            font-size: var(--font-size-sm);
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: var(--space-20);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: var(--space-8);
+            font-weight: var(--font-weight-medium);
+            color: var(--color-text);
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: var(--space-12);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            font-size: var(--font-size-base);
+            color: var(--color-text);
+            background-color: var(--color-surface);
+            transition: border-color var(--duration-fast);
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-error {
+            color: var(--color-error);
+            font-size: var(--font-size-sm);
+            margin-top: var(--space-4);
+        }
+
+        /* Card Styles */
+        .card {
+            background-color: var(--color-surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-card-border);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            transition: box-shadow var(--duration-normal);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-body {
+            padding: var(--space-24);
+        }
+
+        /* Page Container */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .page-content {
+            padding: var(--space-32) 0;
+            min-height: calc(100vh - 200px);
+        }
+
+        .page-header {
+            margin-bottom: var(--space-32);
+        }
+
+        .page-title {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--space-8);
+        }
+
+        .page-description {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-lg);
+        }
+
+        /* Auth Pages */
+        .auth-container {
+            max-width: 450px;
+            margin: 60px auto;
+        }
+
+        .auth-card {
+            padding: var(--space-48);
+        }
+
+        .auth-title {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--space-8);
+            text-align: center;
+        }
+
+        .auth-subtitle {
+            color: var(--color-text-secondary);
+            text-align: center;
+            margin-bottom: var(--space-32);
+        }
+
+        .auth-link {
+            text-align: center;
+            margin-top: var(--space-20);
+            color: var(--color-text-secondary);
+        }
+
+        .auth-link a {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-weight: var(--font-weight-medium);
+        }
+
+        .demo-credentials {
+            background: var(--color-secondary);
+            padding: var(--space-16);
+            border-radius: var(--radius-base);
+            margin-top: var(--space-24);
+            font-size: var(--font-size-sm);
+        }
+
+        .demo-credentials h4 {
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--space-8);
+        }
+
+        .demo-credentials ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .demo-credentials li {
+            margin-bottom: var(--space-4);
+        }
+
+        /* Video Grid */
+        .videos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--space-24);
+            margin-top: var(--space-24);
+        }
+
+        .video-card {
+            cursor: pointer;
+            transition: transform var(--duration-normal);
+        }
+
+        .video-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .video-thumbnail {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-teal-400));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: var(--font-size-4xl);
+            position: relative;
+        }
+
+        .video-duration {
+            position: absolute;
+            bottom: var(--space-8);
+            right: var(--space-8);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: var(--space-4) var(--space-8);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-sm);
+        }
+
+        .video-info {
+            padding: var(--space-16);
+        }
+
+        .video-title {
+            font-weight: var(--font-weight-semibold);
+            font-size: var(--font-size-lg);
+            margin-bottom: var(--space-8);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .video-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--space-4);
+        }
+
+        .video-description {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        /* Video Player */
+        .player-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .video-player-wrapper {
+            background: var(--color-black);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            margin-bottom: var(--space-24);
+        }
+
+        .video-player {
+            width: 100%;
+            max-height: 600px;
+            display: block;
+        }
+
+        .player-controls {
+            background: var(--color-surface);
+            padding: var(--space-16);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-card-border);
+        }
+
+        .player-info {
+            margin-bottom: var(--space-16);
+        }
+
+        .player-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--space-8);
+        }
+
+        .player-meta {
+            display: flex;
+            gap: var(--space-24);
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--space-12);
+        }
+
+        .player-actions {
+            display: flex;
+            gap: var(--space-12);
+        }
+
+        /* Upload Page */
+        .upload-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .upload-area {
+            border: 2px dashed var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-48);
+            text-align: center;
+            background: var(--color-surface);
+            cursor: pointer;
+            transition: border-color var(--duration-normal);
+        }
+
+        .upload-area:hover,
+        .upload-area.dragover {
+            border-color: var(--color-primary);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: var(--space-16);
+            color: var(--color-text-secondary);
+        }
+
+        .upload-text {
+            font-size: var(--font-size-lg);
+            color: var(--color-text);
+            margin-bottom: var(--space-8);
+        }
+
+        .upload-hint {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+        }
+
+        .progress-container {
+            margin-top: var(--space-24);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--color-secondary);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--color-primary);
+            transition: width var(--duration-fast);
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: var(--space-8);
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+        }
+
+        /* Statistics */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-24);
+            margin-bottom: var(--space-32);
+        }
+
+        .stat-card {
+            padding: var(--space-24);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-card-border);
+            background: var(--color-surface);
+        }
+
+        .stat-value {
+            font-size: var(--font-size-4xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+            margin-bottom: var(--space-8);
+        }
+
+        .stat-label {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+        }
+
+        /* Search and Filter */
+        .search-bar {
+            margin-bottom: var(--space-24);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: var(--space-12) var(--space-16);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            font-size: var(--font-size-base);
+            background-color: var(--color-surface);
+            color: var(--color-text);
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: var(--space-24);
+            right: var(--space-24);
+            background: var(--color-surface);
+            border: 1px solid var(--color-card-border);
+            border-radius: var(--radius-base);
+            padding: var(--space-16) var(--space-24);
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            display: none;
+            min-width: 300px;
+        }
+
+        .toast.show {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--color-success);
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--color-error);
+        }
+
+        .toast.warning {
+            border-left: 4px solid var(--color-warning);
+        }
+
+        /* Loading Skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, var(--color-secondary) 25%, var(--color-secondary-hover) 50%, var(--color-secondary) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s ease-in-out infinite;
+        }
+
+        @keyframes loading {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        .skeleton-card {
+            height: 300px;
+            border-radius: var(--radius-lg);
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-card-border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--color-surface);
+        }
+
+        th,
+        td {
+            padding: var(--space-16);
+            text-align: left;
+            border-bottom: 1px solid var(--color-card-border);
+        }
+
+        th {
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text);
+            background: var(--color-secondary);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-8);
+            margin-top: var(--space-32);
+        }
+
+        .pagination button {
+            padding: var(--space-8) var(--space-16);
+            border: 1px solid var(--color-border);
+            background: var(--color-surface);
+            color: var(--color-text);
+            border-radius: var(--radius-base);
+            cursor: pointer;
+            transition: all var(--duration-fast);
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background: var(--color-secondary);
+        }
+
+        .pagination button.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: var(--space-48);
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: var(--space-16);
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--space-8);
+        }
+
+        .empty-description {
+            color: var(--color-text-secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar-menu {
+                gap: var(--space-12);
+            }
+
+            .videos-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .player-meta {
+                flex-direction: column;
+                gap: var(--space-8);
+            }
+
+            .player-actions {
+                flex-direction: column;
+            }
+
+            .table-container {
+                font-size: var(--font-size-sm);
+            }
+
+            th,
+            td {
+                padding: var(--space-8);
+            }
+        }
+
+        /* Hide elements */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            border: 3px solid var(--color-secondary);
+            border-top: 3px solid var(--color-primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: var(--space-24) auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .file-preview {
+            background: var(--color-secondary);
+            padding: var(--space-16);
+            border-radius: var(--radius-base);
+            margin-top: var(--space-16);
+        }
+
+        .file-preview-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--space-8);
+            font-size: var(--font-size-sm);
+        }
+
+        .video-actions {
+            display: flex;
+            gap: var(--space-8);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar" style="display: none;">
+        <div class="container">
+            <div class="navbar-content">
+                <a href="#" class="navbar-brand" onclick="navigateTo('dashboard')">🎥 VideoStream</a>
+                <div class="navbar-menu">
+                    <a class="navbar-link" onclick="navigateTo('dashboard')" id="nav-dashboard">Dashboard</a>
+                    <a class="navbar-link" onclick="navigateTo('upload')" id="nav-upload" style="display: none;">Upload</a>
+                    <a class="navbar-link" onclick="navigateTo('my-videos')" id="nav-my-videos" style="display: none;">My Videos</a>
+                    <a class="navbar-link" onclick="navigateTo('analytics')" id="nav-analytics" style="display: none;">Analytics</a>
+                    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">🌓</button>
+                    <a class="navbar-link" onclick="logout()">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Page -->
+    <div id="page-login" class="page active">
+        <div class="auth-container">
+            <div class="card auth-card">
+                <h1 class="auth-title">Welcome to VideoStream</h1>
+                <p class="auth-subtitle">Login to access your videos</p>
+                
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" id="login-email" required placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-input" id="login-password" required placeholder="Enter your password">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+                </form>
+
+                <div class="auth-link">
+                    Don't have an account? <a href="#" onclick="navigateTo('register')">Register</a>
+                </div>
+
+                <div class="demo-credentials">
+                    <h4>Demo Credentials:</h4>
+                    <ul>
+                        <li><strong>Admin:</strong> admin@example.com / password123</li>
+                        <li><strong>Viewer:</strong> viewer@example.com / password123</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Page -->
+    <div id="page-register" class="page">
+        <div class="auth-container">
+            <div class="card auth-card">
+                <h1 class="auth-title">Create Account</h1>
+                <p class="auth-subtitle">Join VideoStream today</p>
+                
+                <form onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-input" id="register-name" required placeholder="Enter your full name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" id="register-email" required placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-input" id="register-password" required placeholder="Create a password" minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Role</label>
+                        <select class="form-select" id="register-role" required>
+                            <option value="viewer">Viewer (View &amp; Download)</option>
+                            <option value="admin">Admin (Upload, Manage, View &amp; Download)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Register</button>
+                </form>
+
+                <div class="auth-link">
+                    Already have an account? <a href="#" onclick="navigateTo('login')">Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Page -->
+    <div id="page-dashboard" class="page">
+        <div class="page-content">
+            <div class="container">
+                <div class="page-header">
+                    <h1 class="page-title">Video Library</h1>
+                    <p class="page-description">Browse and watch all available videos</p>
+                </div>
+
+                <div class="stats-grid" id="dashboard-stats">
+                    <!-- Stats will be populated here -->
+                </div>
+
+                <div class="search-bar">
+                    <input type="text" class="search-input" id="search-input" placeholder="Search videos by title or description..." oninput="handleSearch()">
+                </div>
+
+                <div id="loading-skeleton" class="videos-grid" style="display: none;">
+                    <div class="skeleton skeleton-card"></div>
+                    <div class="skeleton skeleton-card"></div>
+                    <div class="skeleton skeleton-card"></div>
+                </div>
+
+                <div class="videos-grid" id="videos-grid">
+                    <!-- Videos will be populated here -->
+                </div>
+
+                <div id="empty-state" class="empty-state" style="display: none;">
+                    <div class="empty-icon">📹</div>
+                    <h3 class="empty-title">No videos found</h3>
+                    <p class="empty-description">Try adjusting your search or upload a new video</p>
+                </div>
+
+                <div class="pagination" id="pagination">
+                    <!-- Pagination will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Page -->
+    <div id="page-upload" class="page">
+        <div class="page-content">
+            <div class="container">
+                <div class="upload-container">
+                    <div class="page-header">
+                        <h1 class="page-title">Upload Video</h1>
+                        <p class="page-description">Share your video with the community</p>
+                    </div>
+
+                    <div class="card card-body">
+                        <form onsubmit="handleUpload(event)">
+                            <div class="upload-area" id="upload-area" onclick="document.getElementById('file-input').click()">
+                                <div class="upload-icon">📤</div>
+                                <div class="upload-text">Click to select or drag and drop</div>
+                                <div class="upload-hint">Supported formats: MP4, AVI, MOV, WebM (Max 500MB)</div>
+                                <input type="file" id="file-input" accept="video/*" style="display: none;" onchange="handleFileSelect(event)">
+                            </div>
+
+                            <div id="file-preview" class="file-preview" style="display: none;">
+                                <div class="file-preview-item">
+                                    <span><strong>File:</strong> <span id="file-name"></span></span>
+                                </div>
+                                <div class="file-preview-item">
+                                    <span><strong>Size:</strong> <span id="file-size"></span></span>
+                                    <span><strong>Duration:</strong> <span id="file-duration"></span></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Video Title</label>
+                                <input type="text" class="form-input" id="video-title" required placeholder="Enter video title">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-textarea" id="video-description" required placeholder="Describe your video..."></textarea>
+                            </div>
+
+                            <div id="upload-progress" class="progress-container" style="display: none;">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="progress-fill"></div>
+                                </div>
+                                <div class="progress-text" id="progress-text">Uploading... 0%</div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" id="upload-btn" style="width: 100%;">Upload Video</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- My Videos Page -->
+    <div id="page-my-videos" class="page">
+        <div class="page-content">
+            <div class="container">
+                <div class="page-header">
+                    <h1 class="page-title">My Videos</h1>
+                    <p class="page-description">Manage your uploaded videos</p>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Size</th>
+                                <th>Views</th>
+                                <th>Uploaded</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="my-videos-table">
+                            <!-- Videos will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="my-videos-empty" class="empty-state" style="display: none;">
+                    <div class="empty-icon">📹</div>
+                    <h3 class="empty-title">No videos uploaded yet</h3>
+                    <p class="empty-description">Start uploading videos to see them here</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analytics Page -->
+    <div id="page-analytics" class="page">
+        <div class="page-content">
+            <div class="container">
+                <div class="page-header">
+                    <h1 class="page-title">Analytics Dashboard</h1>
+                    <p class="page-description">Monitor your platform statistics</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-total-videos">0</div>
+                        <div class="stat-label">Total Videos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-total-views">0</div>
+                        <div class="stat-label">Total Views</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-total-storage">0 MB</div>
+                        <div class="stat-label">Storage Used</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-total-users">0</div>
+                        <div class="stat-label">Total Users</div>
+                    </div>
+                </div>
+
+                <div class="card card-body">
+                    <h3 style="margin-bottom: var(--space-16);">Recent Activity</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Action</th>
+                                    <th>Video</th>
+                                    <th>Time</th>
+                                </tr>
+                            </thead>
+                            <tbody id="activity-log-table">
+                                <!-- Activity logs will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Player Page -->
+    <div id="page-player" class="page">
+        <div class="page-content">
+            <div class="container">
+                <div class="player-container">
+                    <div class="video-player-wrapper">
+                        <video id="video-player" class="video-player" controls controlsList="nodownload">
+                            <source src="" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+
+                    <div class="player-controls">
+                        <div class="player-info">
+                            <h2 class="player-title" id="player-title">Video Title</h2>
+                            <div class="player-meta">
+                                <span id="player-uploader">Uploaded by</span>
+                                <span id="player-date">Date</span>
+                                <span id="player-views">Views</span>
+                                <span id="player-size">Size</span>
+                            </div>
+                            <p id="player-description" style="margin-top: var(--space-12); color: var(--color-text-secondary);">Description</p>
+                        </div>
+                        <div class="player-actions">
+                            <button class="btn btn-primary" onclick="downloadVideo()">📥 Download Video</button>
+                            <button class="btn btn-secondary" onclick="navigateTo('dashboard')">← Back to Videos</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // Global State
+        let currentUser = null;
+        let currentPage = 'login';
+        let currentVideo = null;
+        let allVideos = [];
+        let filteredVideos = [];
+        let currentPageNum = 1;
+        const videosPerPage = 9;
+        let selectedFile = null;
+        let uploadCount = 0;
+        let lastUploadReset = Date.now();
+
+        // In-Memory Database Simulation
+        const DB = {
+            users: [],
+            videos: [],
+            activityLog: []
+        };
+
+        // Initialize Demo Data
+        function initializeData() {
+            // Demo users
+            DB.users = [
+                {
+                    id: 'u1',
+                    email: 'admin@example.com',
+                    password: 'password123',
+                    fullName: 'Admin User',
+                    role: 'admin',
+                    createdAt: new Date('2025-10-01').toISOString(),
+                    totalStorageUsed: 0
+                },
+                {
+                    id: 'u2',
+                    email: 'viewer@example.com',
+                    password: 'password123',
+                    fullName: 'Viewer User',
+                    role: 'viewer',
+                    createdAt: new Date('2025-10-15').toISOString(),
+                    totalStorageUsed: 0
+                }
+            ];
+
+            // Demo videos
+            DB.videos = [
+                {
+                    id: 'v1',
+                    title: 'Introduction to Web Development',
+                    description: 'Learn the basics of web development from scratch',
+                    uploadedBy: 'u1',
+                    uploaderName: 'Admin User',
+                    fileName: 'intro-web-dev.mp4',
+                    fileSize: 125000000,
+                    duration: 3600,
+                    mimeType: 'video/mp4',
+                    thumbnailUrl: '',
+                    uploadedAt: new Date('2025-11-05T10:30:00Z').toISOString(),
+                    viewCount: 245,
+                    videoUrl: createDemoVideoUrl(),
+                    metadata: {
+                        width: 1920,
+                        height: 1080,
+                        codec: 'h264'
+                    }
+                },
+                {
+                    id: 'v2',
+                    title: 'React Tutorial for Beginners',
+                    description: 'Complete React tutorial covering hooks, components, and state management',
+                    uploadedBy: 'u1',
+                    uploaderName: 'Admin User',
+                    fileName: 'react-tutorial.mp4',
+                    fileSize: 89000000,
+                    duration: 2400,
+                    mimeType: 'video/mp4',
+                    thumbnailUrl: '',
+                    uploadedAt: new Date('2025-11-04T14:15:00Z').toISOString(),
+                    viewCount: 189,
+                    videoUrl: createDemoVideoUrl(),
+                    metadata: {
+                        width: 1920,
+                        height: 1080,
+                        codec: 'h264'
+                    }
+                },
+                {
+                    id: 'v3',
+                    title: 'Database Design Best Practices',
+                    description: 'Learn how to design scalable and efficient databases',
+                    uploadedBy: 'u1',
+                    uploaderName: 'Admin User',
+                    fileName: 'db-design.mp4',
+                    fileSize: 156000000,
+                    duration: 4200,
+                    mimeType: 'video/mp4',
+                    thumbnailUrl: '',
+                    uploadedAt: new Date('2025-11-03T09:45:00Z').toISOString(),
+                    viewCount: 312,
+                    videoUrl: createDemoVideoUrl(),
+                    metadata: {
+                        width: 1920,
+                        height: 1080,
+                        codec: 'h264'
+                    }
+                }
+            ];
+
+            // Initial activity logs
+            DB.activityLog = [
+                {
+                    id: 'a1',
+                    userId: 'u1',
+                    userName: 'Admin User',
+                    action: 'upload',
+                    videoId: 'v1',
+                    videoTitle: 'Introduction to Web Development',
+                    timestamp: new Date('2025-11-05T10:30:00Z').toISOString(),
+                    details: {}
+                },
+                {
+                    id: 'a2',
+                    userId: 'u2',
+                    userName: 'Viewer User',
+                    action: 'view',
+                    videoId: 'v1',
+                    videoTitle: 'Introduction to Web Development',
+                    timestamp: new Date('2025-11-06T15:20:00Z').toISOString(),
+                    details: {}
+                }
+            ];
+
+            allVideos = [...DB.videos];
+            filteredVideos = [...DB.videos];
+
+            console.log('✅ Demo data initialized:', DB);
+        }
+
+        // Create demo video URL (using a simple colored canvas as placeholder)
+        function createDemoVideoUrl() {
+            // Create a simple data URL for demo purposes
+            return 'data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAAAAIZnJlZQAAAu1tZGF0AAACrQYF//+p3EXpvebZSLeWLNgg2SPu73gyNjQgLSBjb3JlIDE1MiByMjg1NCBlOWE1OTAzIC0gSC4yNjQvTVBFRy00IEFWQyBjb2RlYyAtIENvcHlsZWZ0IDIwMDMtMjAxNyAtIGh0dHA6Ly93d3cudmlkZW9sYW4ub3JnL3gyNjQuaHRtbCAtIG9wdGlvbnM6IGNhYmFjPTEgcmVmPTMgZGVibG9jaz0xOjA6MCBhbmFseXNlPTB4MzoweDExMyBtZT1oZXggc3VibWU9NyBwc3k9MSBwc3lfcmQ9MS4wMDowLjAwIG1peGVkX3JlZj0xIG1lX3JhbmdlPTE2IGNocm9tYV9tZT0xIHRyZWxsaXM9MSA4eDhkY3Q9MSBjcW09MCBkZWFkem9uZT0yMSwxMSBmYXN0X3Bza2lwPTEgY2hyb21hX3FwX29mZnNldD0tMiB0aHJlYWRzPTEgbG9va2FoZWFkX3RocmVhZHM9MSBzbGljZWRfdGhyZWFkcz0wIG5yPTAgZGVjaW1hdGU9MSBpbnRlcmxhY2VkPTAgYmx1cmF5X2NvbXBhdD0wIGNvbnN0cmFpbmVkX2ludHJhPTAgYmZyYW1lcz0zIGJfcHlyYW1pZD0yIGJfYWRhcHQ9MSBiX2JpYXM9MCBkaXJlY3Q9MSB3ZWlnaHRiPTEgb3Blbl9nb3A9MCB3ZWlnaHRwPTIga2V5aW50PTI1MCBrZXlpbnRfbWluPTEgc2NlbmVjdXQ9NDAgaW50cmFfcmVmcmVzaD0wIHJjX2xvb2thaGVhZD00MCByYz1jcmYgbWJ0cmVlPTEgY3JmPTIzLjAgcWNvbXA9MC42MCBxcG1pbj0wIHFwbWF4PTY5IHFwc3RlcD00IGlwX3JhdGlvPTEuNDAgYXE9MToxLjAwAIAAAAAwZYiEAD//8m+P5OXfBeLGOfKE=';
+        }
+
+        // Authentication Functions
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            try {
+                const user = DB.users.find(u => u.email === email && u.password === password);
+                
+                if (user) {
+                    currentUser = user;
+                    logActivity(user.id, 'login', null, null);
+                    showToast('Login successful! Welcome ' + user.fullName, 'success');
+                    
+                    // Setup UI based on role
+                    setupUserInterface();
+                    navigateTo('dashboard');
+                } else {
+                    showToast('Invalid email or password', 'error');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showToast('An error occurred during login', 'error');
+            }
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const role = document.getElementById('register-role').value;
+
+            try {
+                // Validate email doesn't exist
+                const existingUser = DB.users.find(u => u.email === email);
+                if (existingUser) {
+                    showToast('Email already exists', 'error');
+                    return;
+                }
+
+                // Create new user
+                const newUser = {
+                    id: 'u' + (DB.users.length + 1),
+                    email: email,
+                    password: password,
+                    fullName: name,
+                    role: role,
+                    createdAt: new Date().toISOString(),
+                    totalStorageUsed: 0
+                };
+
+                DB.users.push(newUser);
+                showToast('Registration successful! Please login', 'success');
+                
+                // Auto-fill login form
+                document.getElementById('login-email').value = email;
+                document.getElementById('login-password').value = password;
+                
+                navigateTo('login');
+            } catch (error) {
+                console.error('Registration error:', error);
+                showToast('An error occurred during registration', 'error');
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('navbar').style.display = 'none';
+            navigateTo('login');
+            showToast('Logged out successfully', 'success');
+        }
+
+        function setupUserInterface() {
+            document.getElementById('navbar').style.display = 'block';
+            
+            if (currentUser.role === 'admin') {
+                document.getElementById('nav-upload').style.display = 'block';
+                document.getElementById('nav-my-videos').style.display = 'block';
+                document.getElementById('nav-analytics').style.display = 'block';
+            } else {
+                document.getElementById('nav-upload').style.display = 'none';
+                document.getElementById('nav-my-videos').style.display = 'none';
+                document.getElementById('nav-analytics').style.display = 'none';
+            }
+        }
+
+        // Navigation
+        function navigateTo(page) {
+            // Check authentication
+            if (page !== 'login' && page !== 'register' && !currentUser) {
+                navigateTo('login');
+                return;
+            }
+
+            // Check authorization
+            if ((page === 'upload' || page === 'my-videos' || page === 'analytics') && currentUser.role !== 'admin') {
+                showToast('Access denied. Admin only.', 'error');
+                return;
+            }
+
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            
+            // Show selected page
+            const pageElement = document.getElementById('page-' + page);
+            if (pageElement) {
+                pageElement.classList.add('active');
+                currentPage = page;
+                
+                // Load page data
+                if (page === 'dashboard') loadDashboard();
+                if (page === 'my-videos') loadMyVideos();
+                if (page === 'analytics') loadAnalytics();
+            }
+        }
+
+        // Dashboard Functions
+        function loadDashboard() {
+            // Show loading
+            document.getElementById('loading-skeleton').style.display = 'grid';
+            document.getElementById('videos-grid').style.display = 'none';
+
+            setTimeout(() => {
+                // Calculate stats
+                const totalVideos = DB.videos.length;
+                const totalViews = DB.videos.reduce((sum, v) => sum + v.viewCount, 0);
+                const totalStorage = DB.videos.reduce((sum, v) => sum + v.fileSize, 0);
+
+                // Update stats
+                const statsHtml = `
+                    <div class="stat-card">
+                        <div class="stat-value">${totalVideos}</div>
+                        <div class="stat-label">Total Videos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${totalViews.toLocaleString()}</div>
+                        <div class="stat-label">Total Views</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${formatFileSize(totalStorage)}</div>
+                        <div class="stat-label">Storage Used</div>
+                    </div>
+                `;
+                document.getElementById('dashboard-stats').innerHTML = statsHtml;
+
+                // Load videos
+                filteredVideos = [...DB.videos];
+                currentPageNum = 1;
+                renderVideos();
+
+                document.getElementById('loading-skeleton').style.display = 'none';
+                document.getElementById('videos-grid').style.display = 'grid';
+            }, 500);
+        }
+
+        function renderVideos() {
+            const start = (currentPageNum - 1) * videosPerPage;
+            const end = start + videosPerPage;
+            const paginatedVideos = filteredVideos.slice(start, end);
+
+            const videosGrid = document.getElementById('videos-grid');
+            const emptyState = document.getElementById('empty-state');
+
+            if (paginatedVideos.length === 0) {
+                videosGrid.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            videosGrid.style.display = 'grid';
+            emptyState.style.display = 'none';
+
+            videosGrid.innerHTML = paginatedVideos.map(video => `
+                <div class="card video-card" onclick="openVideo('${video.id}')">
+                    <div class="video-thumbnail">
+                        🎬
+                        <div class="video-duration">${formatDuration(video.duration)}</div>
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title" title="${video.title}">${video.title}</h3>
+                        <div class="video-meta">
+                            <span>👁️ ${video.viewCount} views</span>
+                            <span>📦 ${formatFileSize(video.fileSize)}</span>
+                        </div>
+                        <div class="video-meta">
+                            <span>👤 ${video.uploaderName}</span>
+                        </div>
+                        <p class="video-description">${video.description}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            renderPagination();
+        }
+
+        function renderPagination() {
+            const totalPages = Math.ceil(filteredVideos.length / videosPerPage);
+            const pagination = document.getElementById('pagination');
+
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+
+            let html = `
+                <button onclick="changePage(${currentPageNum - 1})" ${currentPageNum === 1 ? 'disabled' : ''}>Previous</button>
+            `;
+
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPageNum - 1 && i <= currentPageNum + 1)) {
+                    html += `<button class="${i === currentPageNum ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+                } else if (i === currentPageNum - 2 || i === currentPageNum + 2) {
+                    html += `<span>...</span>`;
+                }
+            }
+
+            html += `
+                <button onclick="changePage(${currentPageNum + 1})" ${currentPageNum === totalPages ? 'disabled' : ''}>Next</button>
+            `;
+
+            pagination.innerHTML = html;
+        }
+
+        function changePage(page) {
+            currentPageNum = page;
+            renderVideos();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function handleSearch() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            
+            if (!searchTerm) {
+                filteredVideos = [...DB.videos];
+            } else {
+                filteredVideos = DB.videos.filter(video => 
+                    video.title.toLowerCase().includes(searchTerm) ||
+                    video.description.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            currentPageNum = 1;
+            renderVideos();
+        }
+
+        // Video Upload Functions
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            
+            if (!file) return;
+
+            // Validate file type
+            if (!file.type.startsWith('video/')) {
+                showToast('Please select a video file', 'error');
+                return;
+            }
+
+            // Validate file size (500MB max)
+            const maxSize = 500 * 1024 * 1024;
+            if (file.size > maxSize) {
+                showToast('File size exceeds 500MB limit', 'error');
+                return;
+            }
+
+            selectedFile = file;
+
+            // Show file preview
+            document.getElementById('file-name').textContent = file.name;
+            document.getElementById('file-size').textContent = formatFileSize(file.size);
+            
+            // Get video duration
+            const video = document.createElement('video');
+            video.preload = 'metadata';
+            video.onloadedmetadata = function() {
+                window.URL.revokeObjectURL(video.src);
+                document.getElementById('file-duration').textContent = formatDuration(Math.floor(video.duration));
+            };
+            video.src = URL.createObjectURL(file);
+
+            document.getElementById('file-preview').style.display = 'block';
+        }
+
+        function handleUpload(event) {
+            event.preventDefault();
+
+            if (!selectedFile) {
+                showToast('Please select a video file', 'error');
+                return;
+            }
+
+            // Rate limiting check
+            const now = Date.now();
+            if (now - lastUploadReset > 3600000) {
+                uploadCount = 0;
+                lastUploadReset = now;
+            }
+
+            if (uploadCount >= 5) {
+                showToast('Upload limit reached. Please wait an hour.', 'warning');
+                return;
+            }
+
+            const title = document.getElementById('video-title').value;
+            const description = document.getElementById('video-description').value;
+
+            // Show progress
+            document.getElementById('upload-progress').style.display = 'block';
+            document.getElementById('upload-btn').disabled = true;
+
+            // Simulate upload progress
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 20;
+                if (progress > 100) progress = 100;
+
+                document.getElementById('progress-fill').style.width = progress + '%';
+                document.getElementById('progress-text').textContent = `Uploading... ${Math.floor(progress)}%`;
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    completeUpload(title, description);
+                }
+            }, 300);
+
+            uploadCount++;
+        }
+
+        function completeUpload(title, description) {
+            // Create video object
+            const newVideo = {
+                id: 'v' + (DB.videos.length + 1),
+                title: title,
+                description: description,
+                uploadedBy: currentUser.id,
+                uploaderName: currentUser.fullName,
+                fileName: selectedFile.name,
+                fileSize: selectedFile.size,
+                duration: Math.floor(Math.random() * 3600) + 600, // Random duration
+                mimeType: selectedFile.type,
+                thumbnailUrl: '',
+                uploadedAt: new Date().toISOString(),
+                viewCount: 0,
+                videoUrl: URL.createObjectURL(selectedFile),
+                metadata: {
+                    width: 1920,
+                    height: 1080,
+                    codec: 'h264'
+                }
+            };
+
+            DB.videos.push(newVideo);
+            allVideos = [...DB.videos];
+            filteredVideos = [...DB.videos];
+
+            // Log activity
+            logActivity(currentUser.id, 'upload', newVideo.id, newVideo.title);
+
+            showToast('Video uploaded successfully!', 'success');
+
+            // Reset form
+            document.getElementById('video-title').value = '';
+            document.getElementById('video-description').value = '';
+            document.getElementById('file-input').value = '';
+            document.getElementById('file-preview').style.display = 'none';
+            document.getElementById('upload-progress').style.display = 'none';
+            document.getElementById('upload-btn').disabled = false;
+            selectedFile = null;
+
+            // Navigate to dashboard
+            setTimeout(() => {
+                navigateTo('dashboard');
+            }, 1500);
+        }
+
+        // Drag and drop for upload
+        const uploadArea = document.getElementById('upload-area');
+        if (uploadArea) {
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    document.getElementById('file-input').files = files;
+                    handleFileSelect({ target: { files: files } });
+                }
+            });
+        }
+
+        // Video Player Functions
+        function openVideo(videoId) {
+            const video = DB.videos.find(v => v.id === videoId);
+            if (!video) return;
+
+            currentVideo = video;
+
+            // Increment view count
+            video.viewCount++;
+            logActivity(currentUser.id, 'view', video.id, video.title);
+
+            // Set video details
+            document.getElementById('player-title').textContent = video.title;
+            document.getElementById('player-uploader').textContent = '👤 ' + video.uploaderName;
+            document.getElementById('player-date').textContent = '📅 ' + formatDate(video.uploadedAt);
+            document.getElementById('player-views').textContent = '👁️ ' + video.viewCount + ' views';
+            document.getElementById('player-size').textContent = '📦 ' + formatFileSize(video.fileSize);
+            document.getElementById('player-description').textContent = video.description;
+
+            // Set video source
+            const player = document.getElementById('video-player');
+            player.src = video.videoUrl;
+            player.load();
+
+            navigateTo('player');
+        }
+
+        function downloadVideo() {
+            if (!currentVideo) return;
+
+            logActivity(currentUser.id, 'download', currentVideo.id, currentVideo.title);
+            showToast('Download started: ' + currentVideo.title, 'success');
+
+            // Simulate download
+            const a = document.createElement('a');
+            a.href = currentVideo.videoUrl;
+            a.download = currentVideo.fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        // My Videos Functions
+        function loadMyVideos() {
+            const myVideos = DB.videos.filter(v => v.uploadedBy === currentUser.id);
+            const tableBody = document.getElementById('my-videos-table');
+            const emptyState = document.getElementById('my-videos-empty');
+
+            if (myVideos.length === 0) {
+                tableBody.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            tableBody.innerHTML = myVideos.map(video => `
+                <tr>
+                    <td><strong>${video.title}</strong><br><small style="color: var(--color-text-secondary);">${video.description}</small></td>
+                    <td>${formatFileSize(video.fileSize)}</td>
+                    <td>${video.viewCount}</td>
+                    <td>${formatDate(video.uploadedAt)}</td>
+                    <td>
+                        <div class="video-actions">
+                            <button class="btn btn-sm btn-secondary" onclick="openVideo('${video.id}')">▶️ Play</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteVideo('${video.id}')">🗑️ Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function deleteVideo(videoId) {
+            if (!confirm('Are you sure you want to delete this video?')) return;
+
+            const videoIndex = DB.videos.findIndex(v => v.id === videoId);
+            if (videoIndex === -1) return;
+
+            const video = DB.videos[videoIndex];
+            logActivity(currentUser.id, 'delete', video.id, video.title);
+
+            DB.videos.splice(videoIndex, 1);
+            allVideos = [...DB.videos];
+            filteredVideos = [...DB.videos];
+
+            showToast('Video deleted successfully', 'success');
+            loadMyVideos();
+        }
+
+        // Analytics Functions
+        function loadAnalytics() {
+            // Update statistics
+            document.getElementById('stat-total-videos').textContent = DB.videos.length;
+            document.getElementById('stat-total-views').textContent = DB.videos.reduce((sum, v) => sum + v.viewCount, 0).toLocaleString();
+            document.getElementById('stat-total-storage').textContent = formatFileSize(DB.videos.reduce((sum, v) => sum + v.fileSize, 0));
+            document.getElementById('stat-total-users').textContent = DB.users.length;
+
+            // Load activity log
+            const activityTable = document.getElementById('activity-log-table');
+            const recentActivity = DB.activityLog.slice(-20).reverse();
+
+            activityTable.innerHTML = recentActivity.map(activity => `
+                <tr>
+                    <td>${activity.userName}</td>
+                    <td><span class="status status--${activity.action === 'upload' ? 'success' : activity.action === 'delete' ? 'error' : 'info'}">${activity.action}</span></td>
+                    <td>${activity.videoTitle || 'N/A'}</td>
+                    <td>${formatDate(activity.timestamp)}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Activity Logging
+        function logActivity(userId, action, videoId, videoTitle) {
+            const user = DB.users.find(u => u.id === userId);
+            const activity = {
+                id: 'a' + (DB.activityLog.length + 1),
+                userId: userId,
+                userName: user ? user.fullName : 'Unknown',
+                action: action,
+                videoId: videoId,
+                videoTitle: videoTitle,
+                timestamp: new Date().toISOString(),
+                details: {}
+            };
+
+            DB.activityLog.push(activity);
+            console.log('📝 Activity logged:', activity);
+        }
+
+        // Utility Functions
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
+        }
+
+        function formatDuration(seconds) {
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = seconds % 60;
+            
+            if (h > 0) {
+                return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+            }
+            return `${m}:${s.toString().padStart(2, '0')}`;
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diff = now - date;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+            if (days === 0) return 'Today';
+            if (days === 1) return 'Yesterday';
+            if (days < 7) return days + ' days ago';
+            if (days < 30) return Math.floor(days / 7) + ' weeks ago';
+            if (days < 365) return Math.floor(days / 30) + ' months ago';
+            
+            return date.toLocaleDateString();
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast ' + type + ' show';
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Theme Toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            
+            if (currentTheme === 'dark') {
+                html.removeAttribute('data-theme');
+            } else {
+                html.setAttribute('data-theme', 'dark');
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeData();
+            navigateTo('login');
+            console.log('🚀 VideoStream initialized');
+        });
+    </script>
+</body>
+</html>
