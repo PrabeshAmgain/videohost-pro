@@ -1,11 +1,25 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
+let supabase = null;
+
+const initSupabase = () => {
+  if (supabase) return supabase;
+  
+  const { createClient } = require('@supabase/supabase-js');
+  
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  
+  if (!supabaseUrl || !supabaseKey) {
+    console.error('Missing Supabase environment variables');
+    return null;
+  }
+  
+  supabase = createClient(supabaseUrl, supabaseKey);
+  return supabase;
+};
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('login');
@@ -17,11 +31,13 @@ export default function Home() {
   const [message, setMessage] = useState('');
   const [user, setUser] = useState(null);
 
-  // Check if user is already logged in
   useEffect(() => {
     const checkUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
+      const client = initSupabase();
+      if (client) {
+        const { data: { user } } = await client.auth.getUser();
+        setUser(user);
+      }
     };
     checkUser();
   }, []);
@@ -33,7 +49,14 @@ export default function Home() {
     setMessage('');
 
     try {
-      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+      const client = initSupabase();
+      if (!client) {
+        setError('Supabase is not properly configured');
+        setLoading(false);
+        return;
+      }
+
+      const { data, error: signInError } = await client.auth.signInWithPassword({
         email,
         password,
       });
@@ -60,7 +83,14 @@ export default function Home() {
     setMessage('');
 
     try {
-      const { data, error: signUpError } = await supabase.auth.signUp({
+      const client = initSupabase();
+      if (!client) {
+        setError('Supabase is not properly configured');
+        setLoading(false);
+        return;
+      }
+
+      const { data, error: signUpError } = await client.auth.signUp({
         email,
         password,
       });
@@ -80,9 +110,12 @@ export default function Home() {
   };
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-    setMessage('Signed out successfully!');
+    const client = initSupabase();
+    if (client) {
+      await client.auth.signOut();
+      setUser(null);
+      setMessage('Signed out successfully!');
+    }
   };
 
   return (
